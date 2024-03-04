@@ -25,11 +25,8 @@ class CustomDataset(Dataset):
 
             processed_data.append({
                 'sentence': processed_sentence,
-                'choices': processed_choices,
-                'label': label,
-                'id': id
+                'label': label
             })
-
         return processed_data
 
     def _tokenize(self, text):
@@ -42,10 +39,8 @@ class CustomDataset(Dataset):
         english_word_pattern = re.compile(r'[a-zA-Z]+')
         # 匹配除了中英文数字空格之外的特殊字符
         punctuation_pattern = re.compile(r'[^\u4e00-\u9fff\da-zA-Z\s]')
-        tokens = []
-        for token in re.findall(r'[\u4e00-\u9fff]|\d+|[a-zA-Z]+|[^\u4e00-\u9fff\da-zA-Z\s]', text):
-            tokens.append(token)
-        return tokens
+        tokens= re.findall(r'[\u4e00-\u9fff]|\d+|[a-zA-Z]+|[^\u4e00-\u9fff\da-zA-Z\s]', text)
+        return ''.join(tokens)
 
     def __len__(self):
         return len(self.data)
@@ -53,32 +48,18 @@ class CustomDataset(Dataset):
     def __getitem__(self, index):
         return self.data[index]
 
-
+# Example usage
 train_dataset = CustomDataset('train.jsonl')
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+train_iterator = iter(train_dataloader)
 
-
-train_iter = iter(train_dataloader)
 
 count = 0
-for item in train_iter:
+for item in train_dataloader:
     print(item)
     count += 1
     if count > 7:
         break
-
-
-def yield_tokens(data_iter):
-    for text, _ in data_iter:
-        yield tokenizer(text)
-count = 0
-for tokens in yield_tokens(train_iterator): # Use a new iterator
-    print(tokens)
-    count += 1
-    if count > 7:
-        break
-
-
 #
 # def basic_tokenizer(text):
 #     chinese_pattern = re.compile(r'[\u4e00-\u9fff]')
