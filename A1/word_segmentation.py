@@ -317,3 +317,4 @@ for epoch in range(1, EPOCHS + 1):
 torch.save(model.state_dict(), "text_classification_jieba_model.pth")
 accu_test = evaluate(model, valid_dataloader, criterion)
 print("test accuracy {:8.3f}".format(accu_test))
+
