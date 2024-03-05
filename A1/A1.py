@@ -138,11 +138,7 @@ class Model(nn.Module):
             nn.ReLU(),
             nn.Linear(hidden_dim, num_classes)
         )
-        self.init_weights()
 
-    def init_weights(self):
-        initrange = 0.5
-        self.embedding.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, token_ids, offsets):
         embedded = self.embedding(token_ids, offsets)
