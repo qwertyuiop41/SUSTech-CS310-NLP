@@ -7,6 +7,7 @@ from typing import List
 from pprint import pprint
 
 import gensim
+from matplotlib import pyplot as plt
 from sklearn.decomposition import TruncatedSVD
 from torch.nn.utils import clip_grad_norm_
 
@@ -15,7 +16,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-
+#
 #
 # # 配置日志记录器
 # logger = logging.getLogger(__name__)
@@ -232,33 +233,63 @@ import numpy as np
 # min_count = 1 # because our data is small. If min_count > 1, you should filter out those unknown words from the data in train() function
 #
 # # epochs=6差不多
-# epochs=10
+# epochs=1
 # vacob_size = len(corpus.id2word)
 #
-# count=0
-# for emb_size in emb_sizes:
-#     for window_size in window_sizes:
-#         for k in ks:
-#             count+=1
-#             logger.info(f"Config {count}: ")
-#             logger.info(f"Hyper-parameters:emb_size={emb_size},window_size={window_size},k={k}")
-#             embedding_file_name=f"{emb_size}_{window_size}_{k}.txt"
-#             # model_name=f"{emb_size}_{window_size}_{k}.pth"
-#             logger.info(f"Saved embedding file name:{emb_size}_{window_size}_{k}.txt")
-#             generated_data= list(generate_data(list(raw_data), window_size=window_size, k=k, corpus=corpus))
-#             dataloader = list(batchify(generated_data, batch_size=4))
-#             # Initialize the corpus and model
-#             corpus = CorpusReader('lunyu_20chapters.txt', min_count)
-#             model = SkipGram(vacob_size, emb_size)
-#
-#             optimizer = torch.optim.SparseAdam(model.parameters(),lr=initial_lr) # or torch.optim.SparseAdam() or torch.optim.Adam()
-#             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(dataloader)*epochs)  # or torch.optim.lr_scheduler.StepLR()
-#             # scheduler=torch.optim.lr_scheduler.StepLR()
-#
-#             train(model, dataloader, optimizer, scheduler,epochs)
-#
-#             # torch.save(model.state_dict(), model_name)
-#             model.save_embedding(corpus.id2word,file_name=embedding_file_name)
+# # count=0
+# # for emb_size in emb_sizes:
+# #     for window_size in window_sizes:
+# #         for k in ks:
+# #             count+=1
+# #             logger.info(f"Config {count}: ")
+# #             logger.info(f"Hyper-parameters:emb_size={emb_size},window_size={window_size},k={k}")
+# #             embedding_file_name=f"embeddings/{emb_size}_{window_size}_{k}.txt"
+# #             # model_name=f"{emb_size}_{window_size}_{k}.pth"
+# #             logger.info(f"Saved embedding file name:{embedding_file_name}")
+# #             generated_data= list(generate_data(list(raw_data), window_size=window_size, k=k, corpus=corpus))
+# #             dataloader = list(batchify(generated_data, batch_size=4))
+# #             # Initialize the corpus and model
+# #             corpus = CorpusReader('lunyu_20chapters.txt', min_count)
+# #             model = SkipGram(vacob_size, emb_size)
+# #
+# #             optimizer = torch.optim.SparseAdam(model.parameters(),lr=initial_lr) # or torch.optim.SparseAdam() or torch.optim.Adam()
+# #             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, len(dataloader)*epochs)  # or torch.optim.lr_scheduler.StepLR()
+# #             # scheduler=torch.optim.lr_scheduler.StepLR()
+# #
+# #             train(model, dataloader, optimizer, scheduler,epochs)
+# #
+# #             # torch.save(model.state_dict(), model_name)
+# #             model.save_embedding(corpus.id2word,file_name=embedding_file_name)
+# #
+# #             # Get embeddings as numpy array
+# #             embeddings = model.emb_v.cpu().weight.data.numpy()
+# #
+# #             # Truncated SVD
+# #             svd = TruncatedSVD(n_components=2)
+# #             embeddings_2d = svd.fit_transform(embeddings)
+# #
+# #
+# #             # Plot the embeddings
+# #             words = ['学', '习', '曰', '子', '人', '仁']
+# #             words_pinyin = ['xue', 'xi', 'yue', 'zi', 'ren1', 'ren2']
+# #
+# #             # plt.figure(figsize=(10, 10))
+# #             for i, word in enumerate(words):
+# #                 x, y = embeddings_2d[corpus.word2id[word]]
+# #                 plt.scatter(x, y, label=word)
+# #                 plt.annotate(words_pinyin[i], (x, y), textcoords="offset points", xytext=(-5, 5), ha='right')
+# #
+# #             plt.xlabel('Dimension 1')
+# #             plt.ylabel('Dimension 2')
+# #             plt.title('Word Embeddings - Truncated SVD')
+# #             plt.legend()
+# #
+# #             image_name = f"embeddings/{emb_size}_{window_size}_{k}.png"
+# #             # Save the figure
+# #             plt.savefig(image_name)
+# #
+# #             # Show the plot
+# #             plt.show()
 #
 #
 #
@@ -274,6 +305,7 @@ print("#######################Requirement5##########################")
 
 # Load embeddings
 ### YOUR CODE HERE ###
+corpus = CorpusReader(inputFileName="lunyu_20chapters.txt", min_count=1)
 folder_path = 'embeddings'  # 指定文件夹路径
 
 # 使用 glob 模块匹配文件夹下所有以 .txt 结尾的文件
@@ -282,13 +314,21 @@ txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
 # 遍历匹配到的文件列表
 for file_path in txt_files:
     print(file_path)
+
     model = gensim.models.KeyedVectors.load_word2vec_format(file_path)
+    # model.intersect_word2vec_format()
+    # model.load_word2vec_format()
+    print(dir(model))
+    print(model.word_vec)
+    print(model.vectors)
+
     embeddings = model.emb_v.cpu().data.numpy()
     ### END YOUR CODE ###
     # Truncated SVD
     ### YOUR CODE HERE ###
     svd = TruncatedSVD(n_components=2)
     embeddings_2d = svd.fit_transform(embeddings)
+    print(embeddings_2d)
     ### END YOUR CODE ###
     # Plot the following words or other words you are interested in
     # You better pick those words that look different in the 2D space compared with the LSA vectors
@@ -298,7 +338,7 @@ for file_path in txt_files:
     ### YOUR CODE HERE ###
     plt.figure(figsize=(10, 10))
     for i, word in enumerate(words):
-        x, y = embeddings_2d[model.word2id[word]]
+        x, y = embeddings_2d[corpus.word2id[word]]
         plt.scatter(x, y, label=word)
         plt.annotate(words_pinyin[i], (x, y), textcoords="offset points", xytext=(-5,5), ha='right')
 
