@@ -10,6 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/Lab3" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lab4" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lab5" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/lab6" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/A3" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
