@@ -80,10 +80,9 @@ model = RNNLM(vocab_size=vocab_size, emb_size=emb_size, hidden_size=hidden_size)
 def train(model_train,criterion,optimizer):
     # 训练过程
     model_train.train()
-    num_epochs = 1  # 迭代次数
+    num_epochs = 2  # 迭代次数
     for epoch in range(num_epochs):
         optimizer.zero_grad()
-
         seq_ids = [torch.tensor([word2id.get(w, 0) for w in line], dtype=torch.long).to(device) for line in lines]
         seq_lens = torch.tensor([len(line) for line in seq_ids])
         seq_ids_padded = nn.utils.rnn.pad_sequence(seq_ids, batch_first=True).to(device)
@@ -92,6 +91,8 @@ def train(model_train,criterion,optimizer):
         for i in range(len(targets_padded)):
             targets_padded[i, :-1] = targets_padded[i, 1:].clone()
             targets_padded[i, -1] = word2id.get('[PAD]', 0)
+        # targets_padded = torch.zeros_like(seq_ids_padded).to(device)
+        # targets_padded[:, :-1] = seq_ids_padded[:, 1:].to(device)
 
         log_probs = model_train(seq_ids_padded, seq_lens)
         loss = criterion(log_probs.view(-1, log_probs.shape[-1]), targets_padded.view(-1))
@@ -106,7 +107,7 @@ criterion = nn.NLLLoss(ignore_index=0, reduction="none")
 optimizer = optim.Adam(model.parameters(), lr=0.1)
 
 train(model,criterion,optimizer)
-torch.save(model, "model.pth")
+torch.save(model, "model_part1.pth")
 
 # generate sentences
 def generate_sentence(model, start_tokens, end_token, max_length=20):
@@ -145,14 +146,14 @@ with open('50_1_5.txt', 'r',encoding='utf-8') as file:
 print('已读入')
 # 遍历每一行内容
 for i,line in enumerate(lines):
-    print(i)
-    # 利用空格分割每一行，获取单词和对应的embedding向量
-    parts = line.split()
-    word = parts[0]
-    embedding = np.array([float(x) for x in parts[1:]])
-    if word in word2id:
-        # 将word和embedding添加到字典中
-        embeddings[word2id[word]] = embedding
+    if i!=0:
+        # 利用空格分割每一行，获取单词和对应的embedding向量
+        parts = line.split()
+        word = parts[0]
+        embedding = np.array([float(x) for x in parts[1:]])
+        if word in word2id:
+            # 将word和embedding添加到字典中
+            embeddings[word2id[word]] = embedding
 
 
 
