@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.pdf
+lab10/gpt2zh
+lab9/bert-base-uncased

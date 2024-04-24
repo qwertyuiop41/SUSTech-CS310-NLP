@@ -7,3 +7,8 @@ A3/glove.6B/glove.6B.300d.txt
 A3/glove.6B/glove.6B.50d.txt
 *.zip
 A3 (1)
+A4/A4.pdf
+A4/data/glove.6B.50d.txt
+*.conll
+/lab10/gpt2zh
+/lab9/bert-base-uncased
