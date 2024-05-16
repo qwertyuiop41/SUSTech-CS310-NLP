@@ -12,3 +12,9 @@ A4/data/glove.6B.50d.txt
 *.conll
 /lab10/gpt2zh
 /lab9/bert-base-uncased
+/lab12/chatglm.cpp/
+/lab12/chatglm3-6b/
+/lab13/squad/
+/lab13/distilbert-base-uncased/
+/lab13/squad.zip
+/lab13/distilbert-base-uncased.zip
