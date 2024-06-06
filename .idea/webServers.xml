@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="42c72769-c72b-493f-af49-0b2f754b96bc" name="172.18.34.25">
+        <fileTransfer rootFolder="/home/xuyang_lab/cse12010336/SUSTech-CS310-Natural-Language-Processing-Final-Project" accessType="SFTP" host="172.18.34.25" port="10022" sshConfigId="f913424d-896e-4f2e-bb9c-53126c0c6166" sshConfig="cse12010336@172.18.34.25:10022 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
